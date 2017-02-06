@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
@@ -163,5 +164,100 @@ namespace ViberSender2017
             {
             }
         }
+
+        //Write by Mann
+        public static int NextAcc()
+        {
+            int result_index = 0;
+            List<string> all_acc = new List<string>();
+            try
+            {
+                connection.ConnectionString = "Data Source = " + path_config;
+                connection.Open();
+                SQLiteDataReader reader;
+                SQLiteCommand command = new SQLiteCommand(connection)
+                {
+                    CommandText = "SELECT * FROM Accounts",
+                    CommandType = CommandType.Text
+                };
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    all_acc.Add(reader.GetString(0).ToString().Trim());
+                }
+                reader.Close();
+
+                string current_id = String.Empty;
+                command.CommandText = "SELECT * FROM Accounts WHERE isDefault = '1'";
+                command.CommandType = CommandType.Text;
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    current_id = reader.GetString(0).ToString().Trim();
+                }
+                reader.Close();
+
+                int index = 0;
+                for (int i = 0; i < all_acc.Count; i++)
+                {
+                    if (all_acc[i] == current_id)
+                    {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index == all_acc.Count - 1)
+                {
+                    SQLiteCommand isDefault0 = new SQLiteCommand("UPDATE Accounts  SET isDefault = 0 WHERE isDefault = 1", connection);
+                    isDefault0.ExecuteNonQuery();
+                    SQLiteCommand isDefault1 = new SQLiteCommand("UPDATE Accounts  SET isDefault = 1 WHERE ID = " + all_acc[0], connection);
+                    isDefault1.ExecuteNonQuery();
+                    result_index = 0;
+                }
+                else
+                {
+                    SQLiteCommand isDefault0 = new SQLiteCommand("UPDATE Accounts  SET isDefault = 0 WHERE isDefault = 1", connection);
+                    isDefault0.ExecuteNonQuery();
+                    SQLiteCommand isDefault1 = new SQLiteCommand("UPDATE Accounts  SET isDefault = 1 WHERE ID = " + all_acc[index + 1], connection);
+                    isDefault1.ExecuteNonQuery();
+                    result_index = index + 1;
+                }
+                connection.Close();
+            }
+            catch
+            {
+            }
+            return result_index;
+        }
+        //Write by Mann
+
+        //Write by Mann
+        public static string CurAcc()
+        {
+            string result = String.Empty;
+            try
+            {
+                connection.ConnectionString = "Data Source = " + path_config;
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection)
+                {
+                    CommandText = "SELECT * FROM Accounts WHERE isDefault = '1'",
+                    CommandType = CommandType.Text
+                };
+                SQLiteDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    result = reader.GetString(0).ToString().Trim();
+                }
+                reader.Close();
+                connection.Close();
+            }
+            catch
+            {
+            }
+            return result;
+        }
+        //Write by Mann
     }
 }
