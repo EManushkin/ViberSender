@@ -143,15 +143,15 @@ namespace ViberSender2017
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Activate activate = new Activate();
-            if (!File.Exists("key.it") || File.ReadAllText("key.it") != activate.GetKey())
-            {
-                int num = (int)activate.ShowDialog();
-                if (!activate.flag)
-                    this.Close();
-                else
-                    File.WriteAllText("key.it", activate.GetKey());
-            }
+            //Activate activate = new Activate();
+            //if (!File.Exists("key.it") || File.ReadAllText("key.it") != activate.GetKey())
+            //{
+            //    int num = (int)activate.ShowDialog();
+            //    if (!activate.flag)
+            //        this.Close();
+            //    else
+            //        File.WriteAllText("key.it", activate.GetKey());
+            //}
             this.dataGridView_all_accs.AutoGenerateColumns = false;
             this.dataGridView_all_accs.AllowUserToAddRows = false;
             this.dataGridView_all_accs.DataSource = (object)WorkBD.DownloadBD();
@@ -168,6 +168,7 @@ namespace ViberSender2017
                 }
             }
             dataGridView_all_accs.Rows[current_index].Selected = true;
+            this.start = current_index;
             //by Mann
         }
 
