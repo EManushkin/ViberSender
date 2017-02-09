@@ -235,6 +235,7 @@ namespace ViberSender2017
                    dt.Rows.Add((object)a[index2], (object)false);
                this.dataGridView_all_numbers.Invoke((Delegate)(new Action(() => this.dataGridView_all_numbers.DataSource = (object)dt)));
                this.button_load_numbers.Invoke((Delegate)(new Action(() => this.button_load_numbers.Enabled = true)));
+               Thread.CurrentThread.Join();
                Thread.CurrentThread.Abort();
            }))
             {
@@ -347,7 +348,7 @@ namespace ViberSender2017
                                 for (int index = 0; index < this.dataGridView_all_numbers.SelectedRows.Count; ++index)
                                     this.dataGridView_all_numbers.SelectedRows[index].Selected = false;
                                 this.dataGridView_all_numbers.Rows[j].Selected = true;
-                                this.dataGridView_all_numbers.Invoke((Delegate)(new Action(() => this.dataGridView_all_numbers.FirstDisplayedScrollingRowIndex = j)));
+                                this.dataGridView_all_numbers.Invoke((Delegate)(new Action(() => this.dataGridView_all_numbers.FirstDisplayedScrollingRowIndex = j > 6 ? j - 6 : 0)));
                                 num1 = j;
                                 string input = this.richTextBox_text.Text; //(string) this.richTextBox_text.Invoke((Delegate) (() => this.richTextBox_text.Text)));
                                 foreach (Match match in Regex.Matches(input, "{.*?}"))
@@ -387,16 +388,20 @@ namespace ViberSender2017
                                 }
                                 if (this.checkBox_ban_status.Checked)
                                 {
-                                    if (ViberDB.GetMessageStatus(phone, this.dataGridView_all_numbers.Rows[j].Cells[0].Value.ToString()) == 130)
+                                    try
                                     {
-                                        count_status++;
+                                        switch (ViberDB.GetMessageStatus(phone, this.dataGridView_all_numbers.Rows[j - 1].Cells[0].Value.ToString()))
+                                        {
+                                            case 0: break;
+                                            case 130: count_status++; break;
+                                            default: count_status = 0; break;
+                                        }
                                     }
-                                    else
+                                    catch
                                     {
-                                        count_status = 0;
                                     }
 
-                                    if ((Decimal)count_status >= this.numericUpDown_kol_status.Value)
+                                    if ((Decimal)count_status >= this.numericUpDown_kol_status.Value - 1)
                                     {
                                         count_status = 0;
                                         break;
@@ -501,6 +506,8 @@ namespace ViberSender2017
             this.tabControl_general = new System.Windows.Forms.TabControl();
             this.tabPage_settings = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.numericUpDown_kol_status = new System.Windows.Forms.NumericUpDown();
+            this.checkBox_ban_status = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.numericUpDown_pause_off = new System.Windows.Forms.NumericUpDown();
             this.checkBox_clear_history = new System.Windows.Forms.CheckBox();
@@ -544,11 +551,10 @@ namespace ViberSender2017
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.button1 = new System.Windows.Forms.Button();
-            this.checkBox_ban_status = new System.Windows.Forms.CheckBox();
-            this.numericUpDown_kol_status = new System.Windows.Forms.NumericUpDown();
             this.tabControl_general.SuspendLayout();
             this.tabPage_settings.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_kol_status)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_pause_off)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_pause)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_kol_unvalid)).BeginInit();
@@ -561,7 +567,6 @@ namespace ViberSender2017
             this.tabPage_subjects.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.contextMenu.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_kol_status)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl_general
@@ -609,6 +614,40 @@ namespace ViberSender2017
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Настройки анти- бан системы";
+            // 
+            // numericUpDown_kol_status
+            // 
+            this.numericUpDown_kol_status.Enabled = false;
+            this.numericUpDown_kol_status.Location = new System.Drawing.Point(277, 70);
+            this.numericUpDown_kol_status.Maximum = new decimal(new int[] {
+            100000000,
+            0,
+            0,
+            0});
+            this.numericUpDown_kol_status.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown_kol_status.Name = "numericUpDown_kol_status";
+            this.numericUpDown_kol_status.Size = new System.Drawing.Size(67, 20);
+            this.numericUpDown_kol_status.TabIndex = 12;
+            this.numericUpDown_kol_status.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
+            // checkBox_ban_status
+            // 
+            this.checkBox_ban_status.AutoSize = true;
+            this.checkBox_ban_status.Location = new System.Drawing.Point(7, 73);
+            this.checkBox_ban_status.Name = "checkBox_ban_status";
+            this.checkBox_ban_status.Size = new System.Drawing.Size(259, 17);
+            this.checkBox_ban_status.TabIndex = 11;
+            this.checkBox_ban_status.Text = "Число одинаковых статусов для перезапуска";
+            this.checkBox_ban_status.UseVisualStyleBackColor = true;
+            this.checkBox_ban_status.CheckedChanged += new System.EventHandler(this.checkBox_ban_status_CheckedChanged);
             // 
             // label3
             // 
@@ -856,7 +895,7 @@ namespace ViberSender2017
             this.dataGridView_all_numbers.Name = "dataGridView_all_numbers";
             this.dataGridView_all_numbers.RowHeadersVisible = false;
             this.dataGridView_all_numbers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView_all_numbers.Size = new System.Drawing.Size(319, 323);
+            this.dataGridView_all_numbers.Size = new System.Drawing.Size(319, 331);
             this.dataGridView_all_numbers.TabIndex = 1;
             // 
             // NumberSerial1
@@ -1061,40 +1100,6 @@ namespace ViberSender2017
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // checkBox_ban_status
-            // 
-            this.checkBox_ban_status.AutoSize = true;
-            this.checkBox_ban_status.Location = new System.Drawing.Point(7, 73);
-            this.checkBox_ban_status.Name = "checkBox_ban_status";
-            this.checkBox_ban_status.Size = new System.Drawing.Size(259, 17);
-            this.checkBox_ban_status.TabIndex = 11;
-            this.checkBox_ban_status.Text = "Число одинаковых статусов для перезапуска";
-            this.checkBox_ban_status.UseVisualStyleBackColor = true;
-            this.checkBox_ban_status.CheckedChanged += new System.EventHandler(this.checkBox_ban_status_CheckedChanged);
-            // 
-            // numericUpDown_kol_status
-            // 
-            this.numericUpDown_kol_status.Enabled = false;
-            this.numericUpDown_kol_status.Location = new System.Drawing.Point(277, 70);
-            this.numericUpDown_kol_status.Maximum = new decimal(new int[] {
-            100000000,
-            0,
-            0,
-            0});
-            this.numericUpDown_kol_status.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numericUpDown_kol_status.Name = "numericUpDown_kol_status";
-            this.numericUpDown_kol_status.Size = new System.Drawing.Size(67, 20);
-            this.numericUpDown_kol_status.TabIndex = 12;
-            this.numericUpDown_kol_status.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1115,6 +1120,7 @@ namespace ViberSender2017
             this.tabPage_settings.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_kol_status)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_pause_off)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_pause)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_kol_unvalid)).EndInit();
@@ -1129,7 +1135,6 @@ namespace ViberSender2017
             this.tabPage_subjects.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.contextMenu.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_kol_status)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1145,7 +1150,9 @@ namespace ViberSender2017
                 source.First<Process>().Kill();
             }
             this.button_change_acc.Enabled = false;
-            dataGridView_all_accs.Rows[WorkBD.NextAcc()].Selected = true;
+            int index = WorkBD.NextAcc();
+            this.start = index;
+            dataGridView_all_accs.Rows[index].Selected = true;
             Process.Start(Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.CommonTemplates)) + @"\Users\" + Environment.UserName + @"\AppData\Local\Viber\Viber.exe");
             this.button_change_acc.Enabled = true;
         }
