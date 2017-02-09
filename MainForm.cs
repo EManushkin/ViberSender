@@ -65,6 +65,8 @@ namespace ViberSender2017
         private CheckBox checkBox_clear_history;
         private Label label3;
         private Button button_change_acc;
+        private CheckBox checkBox_ban_status;
+        private NumericUpDown numericUpDown_kol_status;
         private NumericUpDown numericUpDown_pause_off;
 
         public MainForm()
@@ -95,6 +97,8 @@ namespace ViberSender2017
                     this.checkBox_swap_acc.Checked = startSettings2.swap_accs;
                     this.checkBox_toFirst.Checked = startSettings2.first_accs;
                     this.checkBox_unvalid_accs.Checked = startSettings2.unvalid;
+                    this.checkBox_ban_status.Checked = startSettings2.status;
+                    this.numericUpDown_kol_status.Value = startSettings2.status_kol;
                     this.numericUpDown_kol_swap.Value = startSettings2.swap_accs_kol;
                     this.numericUpDown_kol_unvalid.Value = startSettings2.unvalid_kol;
                     this.textBox_file.Text = startSettings2.folder_files;
@@ -123,6 +127,11 @@ namespace ViberSender2017
         private void checkBox_unvalid_accs_CheckedChanged(object sender, EventArgs e)
         {
             this.numericUpDown_kol_unvalid.Enabled = this.checkBox_unvalid_accs.Checked;
+        }
+
+        private void checkBox_ban_status_CheckedChanged(object sender, EventArgs e)
+        {
+            this.numericUpDown_kol_status.Enabled = this.checkBox_ban_status.Checked;
         }
 
         private void button_browse_numbers_Click(object sender, EventArgs e)
@@ -260,6 +269,10 @@ namespace ViberSender2017
                 startSettings1.richtextbox = text4;
                 int num6 = this.checkBox_swap_acc.Checked ? 1 : 0;
                 startSettings1.swap_accs = num6 != 0;
+                int check_status = this.checkBox_ban_status.Checked ? 1 : 0;
+                startSettings1.status = check_status != 0;
+                Decimal count_status = this.numericUpDown_kol_status.Value;
+                startSettings1.status_kol = count_status;
                 Decimal num7 = this.numericUpDown_kol_swap.Value;
                 startSettings1.swap_accs_kol = num7;
                 int num8 = this.checkBox_unvalid_accs.Checked ? 1 : 0;
@@ -292,6 +305,7 @@ namespace ViberSender2017
             int num1 = 0;
             int num2 = 0;
             int num3;
+            int count_status = 0;
             for (int i = this.start; i < this.dataGridView_all_accs.Rows.Count; i = num3 + 1)
             {
                 try
@@ -370,6 +384,23 @@ namespace ViberSender2017
                                 {
                                     num2 = 0;
                                     break;
+                                }
+                                if (this.checkBox_ban_status.Checked)
+                                {
+                                    if (ViberDB.GetMessageStatus(phone, this.dataGridView_all_numbers.Rows[j].Cells[0].Value.ToString()) == 130)
+                                    {
+                                        count_status++;
+                                    }
+                                    else
+                                    {
+                                        count_status = 0;
+                                    }
+
+                                    if ((Decimal)count_status >= this.numericUpDown_kol_status.Value)
+                                    {
+                                        count_status = 0;
+                                        break;
+                                    }
                                 }
                                 if (this.checkBox_swap_acc.Checked && (Decimal)(j + 1) % this.numericUpDown_kol_swap.Value == Decimal.Zero)
                                 {
@@ -482,6 +513,7 @@ namespace ViberSender2017
             this.numericUpDown_kol_swap = new System.Windows.Forms.NumericUpDown();
             this.checkBox_swap_acc = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button_change_acc = new System.Windows.Forms.Button();
             this.button_new_acc = new System.Windows.Forms.Button();
             this.dataGridView_all_accs = new System.Windows.Forms.DataGridView();
             this.NumberSerial = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -512,7 +544,8 @@ namespace ViberSender2017
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.button1 = new System.Windows.Forms.Button();
-            this.button_change_acc = new System.Windows.Forms.Button();
+            this.checkBox_ban_status = new System.Windows.Forms.CheckBox();
+            this.numericUpDown_kol_status = new System.Windows.Forms.NumericUpDown();
             this.tabControl_general.SuspendLayout();
             this.tabPage_settings.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -528,6 +561,7 @@ namespace ViberSender2017
             this.tabPage_subjects.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.contextMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_kol_status)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl_general
@@ -556,6 +590,8 @@ namespace ViberSender2017
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.numericUpDown_kol_status);
+            this.groupBox2.Controls.Add(this.checkBox_ban_status);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.numericUpDown_pause_off);
             this.groupBox2.Controls.Add(this.checkBox_clear_history);
@@ -593,7 +629,7 @@ namespace ViberSender2017
             // checkBox_clear_history
             // 
             this.checkBox_clear_history.AutoSize = true;
-            this.checkBox_clear_history.Location = new System.Drawing.Point(354, 73);
+            this.checkBox_clear_history.Location = new System.Drawing.Point(354, 96);
             this.checkBox_clear_history.Name = "checkBox_clear_history";
             this.checkBox_clear_history.Size = new System.Drawing.Size(122, 17);
             this.checkBox_clear_history.TabIndex = 8;
@@ -619,7 +655,7 @@ namespace ViberSender2017
             // checkBox_data
             // 
             this.checkBox_data.AutoSize = true;
-            this.checkBox_data.Location = new System.Drawing.Point(7, 73);
+            this.checkBox_data.Location = new System.Drawing.Point(354, 73);
             this.checkBox_data.Name = "checkBox_data";
             this.checkBox_data.Size = new System.Drawing.Size(178, 17);
             this.checkBox_data.TabIndex = 5;
@@ -716,6 +752,16 @@ namespace ViberSender2017
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Настроки аккаунтов Viber";
+            // 
+            // button_change_acc
+            // 
+            this.button_change_acc.Location = new System.Drawing.Point(227, 20);
+            this.button_change_acc.Name = "button_change_acc";
+            this.button_change_acc.Size = new System.Drawing.Size(195, 37);
+            this.button_change_acc.TabIndex = 6;
+            this.button_change_acc.Text = "Сменить пользователя";
+            this.button_change_acc.UseVisualStyleBackColor = true;
+            this.button_change_acc.Click += new System.EventHandler(this.button_change_acc_Click);
             // 
             // button_new_acc
             // 
@@ -1015,15 +1061,39 @@ namespace ViberSender2017
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // button_change_acc
+            // checkBox_ban_status
             // 
-            this.button_change_acc.Location = new System.Drawing.Point(227, 20);
-            this.button_change_acc.Name = "button_change_acc";
-            this.button_change_acc.Size = new System.Drawing.Size(195, 37);
-            this.button_change_acc.TabIndex = 6;
-            this.button_change_acc.Text = "Сменить пользователя";
-            this.button_change_acc.UseVisualStyleBackColor = true;
-            this.button_change_acc.Click += new System.EventHandler(this.button_change_acc_Click);
+            this.checkBox_ban_status.AutoSize = true;
+            this.checkBox_ban_status.Location = new System.Drawing.Point(7, 73);
+            this.checkBox_ban_status.Name = "checkBox_ban_status";
+            this.checkBox_ban_status.Size = new System.Drawing.Size(259, 17);
+            this.checkBox_ban_status.TabIndex = 11;
+            this.checkBox_ban_status.Text = "Число одинаковых статусов для перезапуска";
+            this.checkBox_ban_status.UseVisualStyleBackColor = true;
+            this.checkBox_ban_status.CheckedChanged += new System.EventHandler(this.checkBox_ban_status_CheckedChanged);
+            // 
+            // numericUpDown_kol_status
+            // 
+            this.numericUpDown_kol_status.Enabled = false;
+            this.numericUpDown_kol_status.Location = new System.Drawing.Point(277, 70);
+            this.numericUpDown_kol_status.Maximum = new decimal(new int[] {
+            100000000,
+            0,
+            0,
+            0});
+            this.numericUpDown_kol_status.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown_kol_status.Name = "numericUpDown_kol_status";
+            this.numericUpDown_kol_status.Size = new System.Drawing.Size(67, 20);
+            this.numericUpDown_kol_status.TabIndex = 12;
+            this.numericUpDown_kol_status.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
             // 
             // MainForm
             // 
@@ -1059,6 +1129,7 @@ namespace ViberSender2017
             this.tabPage_subjects.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.contextMenu.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_kol_status)).EndInit();
             this.ResumeLayout(false);
 
         }
