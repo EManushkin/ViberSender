@@ -59,14 +59,15 @@ namespace ViberSender2017
         private DataGridViewCheckBoxColumn UseSend;
         private DataGridViewTextBoxColumn Login;
         private DataGridViewTextBoxColumn Number;
-        private DataGridViewTextBoxColumn NumberSerial1;
-        private DataGridViewTextBoxColumn Numbers;
-        private DataGridViewTextBoxColumn Sended;
         private CheckBox checkBox_clear_history;
         private Label label3;
         private Button button_change_acc;
         private CheckBox checkBox_ban_status;
         private NumericUpDown numericUpDown_kol_status;
+        private DataGridViewTextBoxColumn NumberSerial1;
+        private DataGridViewTextBoxColumn Numbers;
+        private DataGridViewTextBoxColumn Sended;
+        private DataGridViewTextBoxColumn Status;
         private NumericUpDown numericUpDown_pause_off;
 
         public MainForm()
@@ -529,9 +530,6 @@ namespace ViberSender2017
             this.Number = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPage_numbers = new System.Windows.Forms.TabPage();
             this.dataGridView_all_numbers = new System.Windows.Forms.DataGridView();
-            this.NumberSerial1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Numbers = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Sended = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.button_load_numbers = new System.Windows.Forms.Button();
             this.textBox_path_numbers = new System.Windows.Forms.TextBox();
@@ -551,6 +549,10 @@ namespace ViberSender2017
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.button1 = new System.Windows.Forms.Button();
+            this.NumberSerial1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Numbers = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Sended = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControl_general.SuspendLayout();
             this.tabPage_settings.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -890,37 +892,14 @@ namespace ViberSender2017
             this.dataGridView_all_numbers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.NumberSerial1,
             this.Numbers,
-            this.Sended});
+            this.Sended,
+            this.Status});
             this.dataGridView_all_numbers.Location = new System.Drawing.Point(317, 7);
             this.dataGridView_all_numbers.Name = "dataGridView_all_numbers";
             this.dataGridView_all_numbers.RowHeadersVisible = false;
             this.dataGridView_all_numbers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView_all_numbers.Size = new System.Drawing.Size(319, 331);
             this.dataGridView_all_numbers.TabIndex = 1;
-            // 
-            // NumberSerial1
-            // 
-            this.NumberSerial1.DataPropertyName = "№";
-            this.NumberSerial1.HeaderText = "№";
-            this.NumberSerial1.Name = "NumberSerial1";
-            this.NumberSerial1.ReadOnly = true;
-            this.NumberSerial1.Width = 43;
-            // 
-            // Numbers
-            // 
-            this.Numbers.DataPropertyName = "Номера";
-            this.Numbers.HeaderText = "Номера";
-            this.Numbers.Name = "Numbers";
-            this.Numbers.ReadOnly = true;
-            this.Numbers.Width = 137;
-            // 
-            // Sended
-            // 
-            this.Sended.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Sended.DataPropertyName = "Отправлено";
-            this.Sended.HeaderText = "Отправлено";
-            this.Sended.Name = "Sended";
-            this.Sended.ReadOnly = true;
             // 
             // groupBox3
             // 
@@ -1099,6 +1078,38 @@ namespace ViberSender2017
             this.button1.Text = "Пауза";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // NumberSerial1
+            // 
+            this.NumberSerial1.DataPropertyName = "№";
+            this.NumberSerial1.HeaderText = "№";
+            this.NumberSerial1.Name = "NumberSerial1";
+            this.NumberSerial1.ReadOnly = true;
+            this.NumberSerial1.Width = 43;
+            // 
+            // Numbers
+            // 
+            this.Numbers.DataPropertyName = "Номера";
+            this.Numbers.HeaderText = "Номера";
+            this.Numbers.Name = "Numbers";
+            this.Numbers.ReadOnly = true;
+            this.Numbers.Width = 137;
+            // 
+            // Sended
+            // 
+            this.Sended.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Sended.DataPropertyName = "Отправлено";
+            this.Sended.HeaderText = "Отправлено";
+            this.Sended.Name = "Sended";
+            this.Sended.ReadOnly = true;
+            // 
+            // Status
+            // 
+            this.Status.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Status.DataPropertyName = "Статус";
+            this.Status.HeaderText = "Статус";
+            this.Status.Name = "Status";
+            this.Status.ReadOnly = true;
             // 
             // MainForm
             // 
